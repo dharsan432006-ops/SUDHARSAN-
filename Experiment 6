@@ -1,0 +1,47 @@
+#include<stdio.h>
+#include<string.h>
+
+char nonterminals[] = {'E','R','T','Y','F'};
+char terminals[] = {'i','+','*','(',')','$'};
+
+char table[5][6][20];
+
+int main() {
+
+    // Manually filling parsing table for given grammar
+
+    strcpy(table[0][0], "E=TR");   // M[E,i]
+    strcpy(table[0][3], "E=TR");   // M[E,(]
+
+    strcpy(table[1][1], "R=+TR");  // M[R,+]
+    strcpy(table[1][4], "R=$");    // M[R,)]
+    strcpy(table[1][5], "R=$");    // M[R,$]
+
+    strcpy(table[2][0], "T=FY");   // M[T,i]
+    strcpy(table[2][3], "T=FY");   // M[T,(]
+
+    strcpy(table[3][2], "Y=*FY");  // M[Y,*]
+    strcpy(table[3][1], "Y=$");    // M[Y,+]
+    strcpy(table[3][4], "Y=$");    // M[Y,)]
+    strcpy(table[3][5], "Y=$");    // M[Y,$]
+
+    strcpy(table[4][0], "F=i");    // M[F,i]
+    strcpy(table[4][3], "F=(E)");  // M[F,(]
+
+    printf("\nPredictive Parsing Table:\n\n");
+
+    printf("      i      +      *      (      )      $\n");
+
+    for(int i=0;i<5;i++) {
+        printf("%c  ", nonterminals[i]);
+        for(int j=0;j<6;j++) {
+            if(strlen(table[i][j]) == 0)
+                printf("  -    ");
+            else
+                printf("%-7s", table[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}

@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+
+int n;                  // number of NFA states
+int m;                  // number of input symbols
+char symbols[MAX];      // input symbols
+int nfa[MAX][MAX][MAX]; // NFA transitions
+int dfa[MAX][MAX];      // DFA transitions
+int dfa_states[MAX][MAX];
+int dfa_count = 0;
+
+// check if state set already exists
+int state_exists(int *set) {
+    for(int i = 0; i < dfa_count; i++) {
+        int same = 1;
+        for(int j = 0; j < n; j++) {
+            if(dfa_states[i][j] != set[j]) {
+                same = 0;
+                break;
+            }
+        }
+        if(same) return i;
+    }
+    return -1;
+}
+
+int main() {
+
+    printf("Enter number of NFA states: ");
+    scanf("%d", &n);
+
+    printf("Enter number of input symbols: ");
+    scanf("%d", &m);
+
+    printf("Enter input symbols:\n");
+    for(int i = 0; i < m; i++)
+        scanf(" %c", &symbols[i]);
+
+    printf("Enter NFA transitions (enter number of transitions followed by states):\n");
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            int k, count;
+            printf("Transitions from state %d on %c: ", i, symbols[j]);
+            scanf("%d", &count);
+            for(k = 0; k < count; k++) {
+                int state;
+                scanf("%d", &state);
+                nfa[i][j][state] = 1;
+            }
+        }
+    }
+
+    // initial DFA state = {0}
+    for(int i = 0; i < n; i++)
+        dfa_states[0][i] = 0;
+    dfa_states[0][0] = 1;
+    dfa_count = 1;
+
+    for(int i = 0; i < dfa_count; i++) {
+        for(int j = 0; j < m; j++) {
+
+            int new_state[MAX] = {0};
+
+            for(int k = 0; k < n; k++) {
+                if(dfa_states[i][k] == 1) {
+                    for(int l = 0; l < n; l++) {
+                        if(nfa[k][j][l] == 1)
+                            new_state[l] = 1;
+                    }
+                }
+            }
+
+            int index = state_exists(new_state);
+
+            if(index == -1) {
+                for(int x = 0; x < n; x++)
+                    dfa_states[dfa_count][x] = new_state[x];
+                index = dfa_count;
+                dfa_count++;
+            }
+
+            dfa[i][j] = index;
+        }
+    }
+
+    printf("\nDFA States:\n");
+    for(int i = 0; i < dfa_count; i++) {
+        printf("State %d: { ", i);
+        for(int j = 0; j < n; j++)
+            if(dfa_states[i][j])
+                printf("%d ", j);
+        printf("}\n");
+    }
+
+    printf("\nDFA Transition Table:\n");
+    for(int i = 0; i < dfa_count; i++) {
+        for(int j = 0; j < m; j++) {
+            printf("From state %d on %c -> %d\n", i, symbols[j], dfa[i][j]);
+        }
+    }
+
+    return 0;
+}

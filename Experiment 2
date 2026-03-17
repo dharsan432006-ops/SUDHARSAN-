@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char re[20];
+
+    printf("Enter Regular Expression (a|b): ");
+    scanf("%s", re);
+
+    printf("\nNFA Construction (Thompson Method)\n");
+    printf("-----------------------------------\n");
+    printf("Start State: q0\n");
+    printf("Final State: q1\n");
+
+    for(int i=0;i<strlen(re);i++)
+{
+        if(re[i]=='a' || re[i]=='b')
+            printf("q0 -- %c --> q1\n",re[i]);
+}
+
+    return 0;
+}

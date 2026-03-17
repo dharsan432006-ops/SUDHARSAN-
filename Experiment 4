@@ -1,0 +1,23 @@
+#include<stdio.h>
+#include<string.h>
+
+int main() {
+    char nonterminal;
+    char alpha[20], beta[20];
+
+    printf("Enter Non-Terminal: ");
+    scanf(" %c", &nonterminal);
+
+    printf("Enter alpha (recursive part after A): ");
+    scanf("%s", alpha);
+
+    printf("Enter beta (non-recursive part): ");
+    scanf("%s", beta);
+
+    printf("\nAfter Removing Left Recursion:\n");
+
+    printf("%c -> %s%c'\n", nonterminal, beta, nonterminal);
+    printf("%c' -> %s%c' | e\n", nonterminal, alpha, nonterminal);
+
+    return 0;
+}
